@@ -1,5 +1,5 @@
-import { Player } from '../../shared/types';
 import { createGame } from './game';
+import { Player } from './types';
 
 let game: ReturnType<typeof createGame>;
 

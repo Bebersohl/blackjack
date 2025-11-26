@@ -1,5 +1,5 @@
-import { Card, Player } from './../../shared/types';
 import { MAX_SEATS } from './constants';
+import { Card, Player, Seat } from './types';
 import { shuffleArray } from './util';
 
 function generateDeck() {
@@ -13,8 +13,6 @@ function generateDeck() {
     )
   );
 }
-
-type Seat = string | null;
 
 type Game = {
   deck: Card[];

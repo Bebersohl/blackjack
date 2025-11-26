@@ -1,14 +1,3 @@
-export interface ApiResponse {
-  message: string;
-  timestamp: string;
-}
-
-export interface User {
-  id: number;
-  name: string;
-  email: string;
-}
-
 export type Player = {
   id: string;
   name: string;
@@ -39,3 +28,5 @@ export type Rank =
   | 'Q'
   | 'K'
   | 'A';
+
+export type Seat = string | null;
