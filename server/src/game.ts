@@ -1,5 +1,5 @@
 import { MAX_SEATS } from './constants';
-import { Card, Player, Seat } from './types';
+import { Card, Dealer, Player, Seat } from './types';
 import { shuffleArray } from './util';
 
 function generateDeck() {
@@ -16,15 +16,23 @@ function generateDeck() {
 
 type Game = {
   deck: Card[];
-  playerMap: { [key: string]: Player };
-  seats: Seat[];
+  discard: Card[];
+  playerMap: { [key: string]: Player | Dealer };
+  seats: [Seat, Seat, Seat, Seat, Seat, 'dealer'];
 };
 
 export function createGame() {
   const game: Game = {
-    deck: generateDeck(),
-    playerMap: {},
-    seats: Array.from({ length: MAX_SEATS }).fill(null) as Seat[],
+    deck: shuffleArray(generateDeck()),
+    discard: [],
+    playerMap: {
+      dealer: {
+        id: 'dealer',
+        name: 'Dealer',
+        hand: [],
+      },
+    },
+    seats: [null, null, null, null, null, 'dealer'],
   };
 
   function addPlayer(index: number, player: Player) {
@@ -49,17 +57,44 @@ export function createGame() {
       throw new Error('Invalid seat index');
     }
 
+    if (game.seats[index] === 'dealer') {
+      throw new Error('Cannot remove dealer');
+    }
+
     delete game.playerMap[playerId];
     game.seats[index] = null;
+  }
 
-    function shuffleDeck() {
-      game.deck = shuffleArray(game.deck);
-    }
+  function shuffleDiscard() {
+    game.deck = shuffleArray(game.discard);
+    game.discard = [];
+  }
+
+  function dealCards() {
+    game.seats.forEach((playerId) => {
+      if (playerId === null) {
+        return;
+      }
+
+      if (game.deck.length === 0) {
+        shuffleDiscard();
+      }
+
+      const card = game.deck.pop();
+
+      game.playerMap[playerId].hand.push(card!);
+    });
+  }
+
+  function dealHand() {
+    dealCards();
+    dealCards();
   }
 
   return {
     state: game,
     addPlayer,
     removePlayer,
+    dealHand,
   };
 }

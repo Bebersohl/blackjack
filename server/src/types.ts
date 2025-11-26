@@ -30,3 +30,9 @@ export type Rank =
   | 'A';
 
 export type Seat = string | null;
+
+export type Dealer = {
+  id: string;
+  name: string;
+  hand: Card[];
+};
